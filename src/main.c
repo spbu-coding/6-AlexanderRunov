@@ -6,7 +6,7 @@
 
 bool asc;
 typedef struct _StringItem {
-    const char *str;
+    char *str;
     struct _StringItem *next;
 } StringItem;
 
