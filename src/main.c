@@ -171,7 +171,7 @@ void quick(strings_array_t string_array, array_size_t n, comparator_func_t cmp) 
 }
 
 
-struct StringItem *radix1(StringItem *pList, unsigned int iDigit) {
+StringItem *radix1(StringItem *pList, unsigned int iDigit) {
     const int iRange = 256;
 
     StringItem *front[iRange];
@@ -214,12 +214,13 @@ struct StringItem *radix1(StringItem *pList, unsigned int iDigit) {
 }
 
 void radix(strings_array_t string_array, array_size_t n, comparator_func_t cmp) {
+    cmp(string_array[0],string_array[0]);
     StringItem *pHead;
     StringItem *pTail;
     pHead = malloc(sizeof(StringItem));
     pHead->str = string_array[0];
     pTail = pHead;
-    for (int i = 1; i < n; i++) {
+    for (array_size_t i = 1; i < n; i++) {
         StringItem *t = malloc(sizeof(StringItem));
         t->str = string_array[i];
         t->next = NULL;
@@ -227,11 +228,10 @@ void radix(strings_array_t string_array, array_size_t n, comparator_func_t cmp) 
         pTail = t;
     }
     pHead = (StringItem *) radix1(pHead, 0);
-    for (int i = 0; i < n; i++) {
+    for (array_size_t i = 0; i < n; i++) {
         pTail = pHead->next;
         string_array[i] = pHead->str;
         free(pHead);
         pHead = pTail;
     }
 }
-
