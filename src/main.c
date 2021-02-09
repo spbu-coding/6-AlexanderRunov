@@ -174,8 +174,8 @@ void quick(strings_array_t string_array, array_size_t n, comparator_func_t cmp) 
 StringItem *radix1(StringItem *pList, unsigned int iDigit) {
     const int iRange = 256;
 
-    StringItem *front[iRange];
-    memset(front, 0, sizeof(front));
+    StringItem **front = (StringItem**)calloc(iRange,sizeof(StringItem));
+    memset(front, 0, iRange * sizeof(StringItem*));
 
     StringItem **ppNextItem[iRange];
     for (int i = 0; i < iRange; i++)
@@ -210,6 +210,7 @@ StringItem *radix1(StringItem *pList, unsigned int iDigit) {
         while (*ppNext)
             ppNext = &((*ppNext)->next);
     }
+    free(front);
     return pResult;
 }
 
@@ -227,7 +228,7 @@ void radix(strings_array_t string_array, array_size_t n, comparator_func_t cmp) 
         pTail->next = t;
         pTail = t;
     }
-    pHead = (StringItem *) radix1(pHead, 0);
+    pHead = radix1(pHead, 0);
     for (array_size_t i = 0; i < n; i++) {
         pTail = pHead->next;
         string_array[i] = pHead->str;
