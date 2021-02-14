@@ -151,8 +151,8 @@ void quick1(strings_array_t a, array_size_t n, comparator_func_t cmp, int l, int
         int left = l, right = r;
         char *middle = a[(left + right) / 2];
         do {
-            while (cmp(a[left], middle) < 0) left++;
-            while (cmp(a[right], middle) > 0) right--;
+            while ((cmp(a[left], middle) < 0 && asc) || (cmp(a[left], middle) > 0 && !asc)) left++;
+            while ((cmp(a[right], middle) > 0 && asc) || (cmp(a[right], middle) < 0 && !asc)) right--;
             if (left <= right) {
                 char *tmp = a[left];
                 a[left] = a[right];
@@ -174,8 +174,8 @@ void quick(strings_array_t string_array, array_size_t n, comparator_func_t cmp) 
 StringItem *radix1(StringItem *pList, unsigned int iDigit) {
     const int iRange = 256;
 
-    StringItem **front = (StringItem**)calloc(iRange,sizeof(StringItem));
-    memset(front, 0, iRange * sizeof(StringItem*));
+    StringItem **front = (StringItem **) calloc(iRange, sizeof(StringItem));
+    memset(front, 0, iRange * sizeof(StringItem *));
 
     StringItem **ppNextItem[iRange];
     for (int i = 0; i < iRange; i++)
@@ -188,8 +188,13 @@ StringItem *radix1(StringItem *pList, unsigned int iDigit) {
         temp->next = NULL;
 
         unsigned char c = (unsigned char) temp->str[iDigit];
-        *ppNextItem[c] = temp;
-        ppNextItem[c] = &temp->next;
+        if (asc) {
+            *ppNextItem[c] = temp;
+            ppNextItem[c] = &temp->next;
+        } else {
+            *ppNextItem[255 - c] = temp;
+            ppNextItem[255 - c] = &temp->next;
+        }
     }
 
     StringItem *pResult = NULL;
