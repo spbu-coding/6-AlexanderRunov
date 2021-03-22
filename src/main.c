@@ -13,6 +13,11 @@ typedef struct _StringItem {
 int main(int argc, char *argv[]) {
     if (argc < 6)
         return -1;
+    if (atoi(argv[1]) < 0) {
+        return -1;
+    }
+    if (strtol(argv[1], 0, 10) == 0)
+        return -1;
     array_size_t n = atoi(argv[1]);
     char file_input[255];
     strcpy(file_input, argv[2]);
@@ -41,6 +46,10 @@ int main(int argc, char *argv[]) {
     strings_array_t string_array;
     string_array = (strings_array_t) calloc(n, sizeof(char *));
     FILE *file = fopen(file_input, "rt");
+    if ((file = fopen(file_input, "rt")) == NULL) {
+        free(string_array);
+        return -1;
+    }
     for (array_size_t i = 0; i < n; i++) {
         if (feof(file))
             return -1;
@@ -66,7 +75,6 @@ int main(int argc, char *argv[]) {
             radix(string_array, n, strcmp);
             break;
     }
-
     file = fopen(file_output, "wt");
     for (array_size_t i = 0; i < n; i++) {
         fprintf(file, "%s", string_array[i]);
